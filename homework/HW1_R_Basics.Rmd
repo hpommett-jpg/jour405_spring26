@@ -16,7 +16,9 @@ In this task, you will learn about the R programming language and write basic R 
 Put your code inside the block below, then click the green arrow to run your code.
 
 ```{r}
-
+x <- 1
+y <- 2
+z <- 3
 ```
 
 ### 1.2: Functions
