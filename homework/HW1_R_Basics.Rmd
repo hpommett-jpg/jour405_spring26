@@ -27,13 +27,13 @@ A function is code that produces some result, like printing. The function for pr
 
 ## Have R print Hello World
 
-```{r}
+```{r} print("Hello World")
 
 ```
 
 ## Have R print the number 42
 
-```{r}
+```{r} print(42)
 
 ```
 
@@ -43,19 +43,19 @@ R can do math, too, which is very necessary for statistics. Let's have it - not 
 
 ## Add 17 to 5
 
-```{r}
+```{r} 17 + 5
 
 ```
 
 ## Add 5 to x (remember x from above?)
 
-```{r}
+```{r} n <- 15 + 5
 
 ```
 
 ## Add 15 to 5 and store it in a variable called n
 
-```{r}
+```{r} n
 
 ```
 
