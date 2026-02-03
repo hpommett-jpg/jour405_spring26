@@ -26,7 +26,7 @@ umd_fees <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/hea
 ```{r}
 umd_fees_pct <- umd_fees |>
  mutate(pct_change = (`Fall 2024`- `Fall 2021`)/`Fall 2021` * 100)
-umd_fees_pct
+print(umd_fees_pct)
 ```
 
 
