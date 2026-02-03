@@ -64,7 +64,7 @@ R can do math, too, which is very necessary for statistics. Let's have it - not 
 You'll need to look up the function to calculate a square root.
 
 ```{r}
-
+p <- sqrt(16)
 ```
 
 ## Calling variable in R
@@ -74,13 +74,13 @@ Calling variables means just typing the variable name in a code block and runnin
 Call y, see y value in console
 
 ```{r}
-
+y
 ```
 
 Call x, see x value in console
 
 ```{r}
-
+x
 ```
 
 ### 1.4: Using the Tidyverse Library
@@ -90,7 +90,7 @@ We'll be using different tools in order to work with data and generate statistic
 ## Load the tidyverse
 
 ```{r}
-
+library(tidyverse)
 
 ```
 
