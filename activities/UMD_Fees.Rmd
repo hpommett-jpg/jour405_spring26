@@ -37,7 +37,7 @@ print(umd_fees_pct)
 
 Write a few sentences about what you found in the data. What's the story here?
 
-
+I don't think this worked and I don;t really understand why. I don't think my work is translating well to GitHub or R studio, nothing is showing up and I don't know what to change. 
 
 
 
