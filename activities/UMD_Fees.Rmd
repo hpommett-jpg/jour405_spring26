@@ -59,5 +59,33 @@ comp |>
     mean_grad = mean(grad)
   )
 ```
+```{r}
+old_value <- 10
+new_value <- 7
+
+percent_change <- ((new_value - old_value) / old_value) * 100
+print(percent_change)
+```
+```{r}
+old_value <- 8
+new_value <- 9
+
+percent_change <- ((new_value - old_value) / old_value) * 100
+print(percent_change)
+```
+```{r}
+old_value <- 7
+new_value <- 7
+
+percent_change <- ((new_value - old_value) / old_value) * 100
+print(percent_change)
+```
+```{r}
+old_value <- 9
+new_value <- 9.5
+
+percent_change <- ((new_value - old_value) / old_value) * 100
+print(percent_change)
+```
 
 When you are done, save your work, switch to GitHub Desktop, then add, commit and push your changes to GitHub and submit the URL of the notebook in ELMS.
