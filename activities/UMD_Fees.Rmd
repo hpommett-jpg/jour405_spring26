@@ -26,19 +26,38 @@ umd_fees <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/hea
 ```{r}
 umd_fees_pct <- umd_fees |>
   mutate(pct_change = (`Fall 2024` - `Fall 2021`) / `Fall 2021` * 100)
-
+ 
 print(umd_fees_pct)
-
+umd_fees_pct25 <- umd_fees |>
+  mutate(pct_change = (`Fall 2025` - `Fall 2024`) / `Fall 2024` * 100)
+ 
 ```
 
 
 
 ### Task 4: Describe our results
 
+
 Write a few sentences about what you found in the data. What's the story here?
 
-I don't think this worked and I don;t really understand why. I don't think my work is translating well to GitHub or R studio, nothing is showing up and I don't know what to change. 
+ 
 
 
+
+
+
+
+```{r}
+comp <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/class_composition.csv")
+
+comp |>
+  summarize(
+    mean_first = mean(first_year),
+    mean_soph = mean(sophomore),
+    mean_junior = mean(junior),
+    mean_senior = mean(senior),
+    mean_grad = mean(grad)
+  )
+```
 
 When you are done, save your work, switch to GitHub Desktop, then add, commit and push your changes to GitHub and submit the URL of the notebook in ELMS.
