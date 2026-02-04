@@ -41,7 +41,7 @@ umd_fees_pct25 <- umd_fees |>
 Write a few sentences about what you found in the data. What's the story here?
 
  
-
+I notice that after 2021 is when the student counseling center received fees beginning after 2021, which makes the percent change unable to be read. The differences between 2024 and 2025 are not that great, though the difference in yearly changes are stark. The shuttle bus and sustainability center overall experienced the most change in fees. I think after more awareness on sustainability over the last few years, this topic makes a lot of sense. The shuttle bus fees probably have a lot to do with mobility for students on and around campus. 
 
 
 
