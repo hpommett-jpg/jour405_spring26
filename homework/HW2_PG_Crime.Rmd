@@ -31,7 +31,15 @@ other property crime, then civilian crime. I think the homicide and sex offense 
 Calculate the total number of incidents per month for each category using `mutate()`, calling the new column `total_incidents`. Then calculate the average number of incidents per month for each category of crime, calling the new column `average_incidents`. Assign the result to a new dataframe called `pg_crime_averages`.
 
 ```{r}
+pg_crime_averages <- pg_crime %>%
+  # Calculate total incidents across all months
+  mutate(total_incidents = Jan + Feb + Mar + Apr + May + Jun + 
+                           Jul + Aug + Sep + Oct + Nov + Dec) %>%
+  # Calculate average incidents per month
+  mutate(average_incidents = total_incidents / 12)
 
+# View the resulting dataframe
+pg_crime_averages
 ```
 
 ### Task 5: Describe the Averages
@@ -39,13 +47,23 @@ Calculate the total number of incidents per month for each category using `mutat
 Examine the new dataframe, `pg_crime_averages`, by clicking on it in the Environment tab in RStudio. Write a couple of sentences describing the average number of incidents per month for each category. Which categories have the highest average number of incidents per month? Which have the lowest? What does this tell you about the pattern of crime in Prince George's County? Are there categories that you have questions about? Why or why not?
 
 ANSWER HERE
-
+The highest average number of incidents all have to do with automobiles, including car accidents, auto theft, and theft from auto. The least amount includes B & E, homicide, and residential robbery. This information indicates that crime involving cars are far more likely than any other crime in this county. Homicide is fairly unlikely, but so are property crimes inside the home or business. I am curious about the crossover with crimes, like if assault shooting includes those that resulted in a fatality. I am also always an advocate for sexual assault awareness, and I wonder about the dark figure of crime here. 
 
 ### Task 6: Testing a Theory
 
 One theory about crime is that it is more likely to occur in the summer months. Test this theory by creating three new columns using `mutate()` that calculate the percentage change compared to the average for each category of crime for the months of June, July, and August. Call the new columns `june_change`, `july_change`, and `august_change`. Assign the result to a new dataframe called `summer_crime_averages`.
 
 ```{r}
+summer_crime_averages <- pg_crime_averages %>%
+  mutate(
+    june_change = (Jun - average_incidents) / average_incidents * 100,
+    july_change = (Jul - average_incidents) / average_incidents * 100,
+    august_change = (Aug - average_incidents) / average_incidents * 100
+  )
+
+# View the new dataframe
+summer_crime_averages
+
 ```
 
 ### Task 7: Describe the Summer Crime Averages
@@ -53,12 +71,15 @@ One theory about crime is that it is more likely to occur in the summer months. 
 Look at the `summer_crime_averages` dataframe by clicking on it in the Environment tab in RStudio. Write a couple of sentences describing the percentage change in the average number of incidents per month for each category of crime for the months of June, July, and August. Do you see any patterns? What does this tell you about the theory that crime is more likely to occur in the summer months?
 
 ANSWER HERE
-
+Several crime categories show positive percentage changes in June, July, and August, indicating above-average incident levels during the summer months, while others show little change or even some slight decreases. This suggests the theory that crime is more likely to occur in the summer is only somewhat supported, as seasonal increases vary by crime type rather than affecting all categories equally.
 ### Task 8: What's the Story?
 
 Write up a lede and nutgraf of a story focused on the crime data in Prince George's County. It could be from any of the dataframes you've created in this assignment. The lede should be a single sentence that summarizes the most important information in the data. The nutgraf should be a paragraph that provides more context and explains why the data is important.
 
 ANSWER HERE
+Crime in Prince George's County fluctuated throughout 2024, with certain categories of crime showing noticeably larger numbers than others.
+
+An analysis of the averaged data concludes that some categories of crime, like assault shooting or auto stolen and recovered, had sharp increases throughout the summer months, though the numbers remained unsteady. Other categories dipped in their averages though, like robbery significantly falling between July and August. This data allows policymakers, government leaders, and police services to prepare for certain trends in the community. It also helps to debunk the theory of criminal activity increases in the summer, and residents and law enforcement should remain vigilant year-round.
 
 ### Task 9: Save Your Work and Put it on GitHub
 
