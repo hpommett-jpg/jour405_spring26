@@ -27,19 +27,22 @@ md_cities <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/he
 Calculate violent and property crime rates for each city for both years using `mutate()`. You'll create four new columns: `violent_rate_2019`, `property_rate_2019`, `violent_rate_2020`, and `property_rate_2020`. You'll need to figure out the proper unit rate, given that there are varying populations. There's no perfect choice; choose the one that works best for you. Save the results to a new dataframe called `md_cities_rates`.
 
 ```{r}
-md_cities_analysis <- md_cities %>%
+md_cities_rates <- md_cities %>%
   mutate(
-    violent_rate_2020 = (violent_2020 / population_2020) * 1000,
-    property_rate_2020 = (property_2020 / population_2020) * 1000,
-    pct_change_total = ((grand_total_2020 - grand_total_2019) / grand_total_2019) * 100
+    violent_rate_2019 = violent2019 / pop2019 * 100000,
+    property_rate_2019 = property2019 / pop2019 * 100000,
+    violent_rate_2020 = violent2020 / pop2020 * 100000,
+    property_rate_2020 = property2020 / pop2020 * 100000
   )
+
+
 ```
 
 ### Task 4: Describe the Rates
 
 Examine the new dataframe, `md_cities_rates`, by clicking on it in the Environment tab in RStudio and sorting by the rate columns. Write a couple of sentences about the results, comparing and contrasting the cities with the highest rates (both violent and property) in 2019 and 2020. Do you see any patterns? What does this tell you about crime in Maryland cities? What's the story here?
 
-ANSWER HERE
+ANSWER HERE Baltimore stnad out with the highest violent crime rate in both years, well above the other Maryland cities in the data. Property crime rates are also higher in larger cities, while smaller cities much report lower rates across the board. Overall, the data shows that crime in Maryland is concentrated in larger urban areas, displaying similar patterns across both years.
 
 
 ### Task 5: Calculate Percentage Change
@@ -47,20 +50,26 @@ ANSWER HERE
 Let's add two percentage change columns to your dataframe: one for violent crime rates and one for property crime rates. You'll calculate the percentage change between 2019 and 2020 for each city. Save the results to a new dataframe called `md_cities_change`.
 
 ```{r}
+md_cities_change <- md_cities_rates %>%
+  mutate(
+    violent_pct_change = (violent_rate_2020 - violent_rate_2019) / violent_rate_2019 * 100,
+    property_pct_change = (property_rate_2020 - property_rate_2019) / property_rate_2019 * 100
+  )
+
 ```
 
 ### Task 7: Describe Percentage Changes
 
 Look at the `md_cities_change` dataframe by clicking on it in the Environment tab in RStudio. Write a couple of sentences describing the percentage change results. What's more interesting here, the patterns or the outliers? What's the story in the data?
 
-ANSWER HERE
+ANSWER HERE The percentage changes show more variation than raw rates. While most cities had small shifts, the smaller ones experienced dramatic increases or decreases. The story here highlights uneven change across Maryland, with some communities seeing noticeable swings despite an overall low crime rate.
 
 ### Task 8: Tell the Best Story
 
 Write up a lede and nutgraf of a story with the _best_ story idea you've found in this assignment. The lede should be a single sentence that summarizes the most important information in the data. The nutgraf should be a paragraph that provides more context and explains why the data is important.
 
-ANSWER HERE
-
+ANSWER HERE Baltimore continues to front Maryland cities in violent crime, even as smaller cities experienced sharper change in annual rates.
+An analysis of the crime data from 2019 to 2020 shows that Baltimore consistently maintains the highest violent and property crime rates, although percentage changes reveal more dynamic shifts in smaller cities. Some small cities experienced dramatic increases or decreases in crime rates, highlighting that yearly trends can vary even in places that are generally considered safe. This data underscores that the story of crime in Maryland not only includes consistent crime in the largest cities, but also about how rapidly rates can change in smaller communities, affecting the resident's comfort and push for policy change.
 ### Task 9: Save Your Work and Put it on GitHub
 
 Save this notebook, then commit it to your local repository. Push the changes to your GitHub repository and submit the URL for this file in ELMS.
