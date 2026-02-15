@@ -73,3 +73,28 @@ An analysis of the crime data from 2019 to 2020 shows that Baltimore consistentl
 ### Task 9: Save Your Work and Put it on GitHub
 
 Save this notebook, then commit it to your local repository. Push the changes to your GitHub repository and submit the URL for this file in ELMS.
+
+### Task 10: Violent crime rates for 2020
+```{r}
+md_cities_percentiles <- md_cities_rates %>%
+  mutate(
+    violent_2020_percentile = ntile(violent_rate_2020, 100)
+  )
+
+```
+```{r}
+md_cities_percentiles %>%
+  filter(violent_2020_percentile > 90) %>%
+  tally()
+
+
+```
+```{r}
+md_cities_rates %>%
+  summarize(
+    violent_2020_iqr = IQR(violent_rate_2020, na.rm = TRUE)
+  )
+
+
+```
+A small number of cities fall above the 90th percentile, showing that very high violent crime rates are concentrated in select urban areas. The IQR confirms that most cities have a much narrower range of data. This finding supports the original story idea that crime in Maryland is concentrated rather than evenly spread.
