@@ -40,12 +40,24 @@ car_thefts |>
 
 
 ### Task 5: Add a line to the histogram that shows the mean of the number of car thefts, and two other lines to show one standard deviation in both directions
+```{r}
+car_thefts |> 
+  ggplot(aes(x = count)) + 
+  geom_histogram(binwidth = 2) +
+  geom_vline(xintercept = mean(car_thefts$count), 
+             color = "red", linetype = "dashed") +
+  geom_vline(xintercept = mean(car_thefts$count) - sd(car_thefts$count), 
+             color = "blue", linetype = "dashed") +
+  geom_vline(xintercept = mean(car_thefts$count) + sd(car_thefts$count), 
+             color = "blue", linetype = "dashed")
 
+```
 
 ### Task 6: Describe your results
 
 Is the distribution normal or skewed in one direction? Write a sentence in which you describe the range of the data covered by one standard deviation from the mean on both sides - how much of the data falls in that range?
 
-
+The graph shows that most car theft counts are around the middle, with a few higher values on the right, making the distribution slightly right-skewed.
+The red line shows the average number of car thefts. The two blue lines show one standard deviation above and below the average. Most of the data fall between those two blue lines, which is about 68% of the data in a normal distribution.
 
 When you are done, save your work, switch to GitHub Desktop, then add, commit and push your changes to GitHub and submit the URL of the notebook in ELMS.
