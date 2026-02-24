@@ -75,6 +75,7 @@ summary(daily_calls$call_count)
 Let's visualize the time series of daily calls. What patterns do you see? If you had to draw horizontal lines that would highlight unusual days, where would those lines be?
 
 ANSWER HERE
+Not to only highlight unusual days, but a pattern I notice is that the highest points in the chart include the midway points of seasons. The largest numbers are all in the midpoints of spring, summer, fall, and winter. I also notice the number goes up around holidays, with a soar of overdose calls near Halloween and New Year's. 
 
 ```{r daily-calls-plot}
 # Plot daily call volume
@@ -137,7 +138,7 @@ unusual_days |>
 
 Let's visualize these unusual days in the context of the full dataset. How do they differ from your answer on Task 3?
 
-ANSWER HERE
+ANSWER HERE These unusual days in this chart are highlighted using different colors dedicated for unusually high versus unusualy low, allowing the viewer to easily identify the outliers in the chart. This can be important in chart analysis for quick identification of deviant numbers.
 
 ```{r plot-unusual-days}
 # Create a clean factor for the plot legend
@@ -207,7 +208,7 @@ ggplot(dow_summary, aes(x = day_of_week, y = avg_calls)) +
 
 We can also calculate z-scores that account for the day of the week pattern. How would you describe the day with the highest z-score without using the term "z-score"?
 
-ANSWER HERE
+ANSWER HERE October 4th, 2022 experienced an extremely high overdose call rate, in comparison with other days throughout the year. This day led to the highest volume of 911 calls in the entire year relating to drug overdoses, ultiamtely to be blamed by an increase in fentanyl in throughout the region. 
 
 ```{r day-of-week-z-scores}
 # Calculate day-of-week adjusted z-scores
@@ -298,5 +299,5 @@ top_outliers |> kable(digits = 2)
 
 Based on our z-score analysis, what are some potential angles for reporting? What would your next steps be and what would you tell an editor about your findings?
 
-ANSWER HERE
+ANSWER HERE Some potential angles for reporting include exploring the drug use rates in Baltimore County throughout the years and if this is related to gang-affiliated drug rings near the city, or speaking to police and first responders on the scene that day or people who survived and recovered from the incident and have since gotten clean, and reporting their stories. 
 
