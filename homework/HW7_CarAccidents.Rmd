@@ -1,5 +1,5 @@
 ---
-title: "HW7_CarAccidents"
+title: "HW7_CarAccidents" 
 ---
 
 ```{r setup, include=FALSE}
@@ -27,19 +27,13 @@ library(knitr)      # For nice tables
 library(lubridate)  # For working with dates
 ```
 
-## Loading the Data
+### Task 1: Loading the Data (1 point)
 
-We'll load the accident data from our CSV file:
+Load the accident data from our CSV file at https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/daily_accidents.csv into a dataframe called `accidents`:
 
 ```{r load-data}
-# Load accident data
-accidents <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/daily_accidents.csv")
-
-# Display the first few rows
-head(accidents)
-
-# Check basic info about the dataset
-glimpse(accidents)
+accidents <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/daily_accidents.csv") |>
+  mutate(date = as.Date(date))
 ```
 
 ## Data Exploration
@@ -72,10 +66,10 @@ ggplot(accidents, aes(x = date, y = total)) +
        caption = "Source: Prince George's County Accident Data")
 ```
 
-### Task 1 (3 points)
+### Task 2 (3 points)
 Looking at the time series visualization above, identify at least two noticeable patterns or anomalies. What questions would you want to investigate further based on this initial view of the data? How might these visual patterns translate into potential story angles?
 
-ANSWER HERE
+ANSWER HERE – There appear to be periods where accidents trend higher, likely late spring/summer, and lower, which could possibly be winter. This suggests a seasonal driving pattern. Some days show dramatic increases or decreases compared to surrounding days, indicating possible weather events, holidays, or data anomalies. Questions that could be investigated based on the data includes if it was COVID that had an effect on the data in 2020, or if weather patterns could be examined in the area to better understand the spikes and drops. A story angle about the weather could be "How Major Weather Triggered Accident Surges." Another story angle on COVID could be "2020: The Safest Year for Accidents in PG County."
 
 The daily data is quite noisy, so let's also look at weekly patterns:
 
@@ -111,23 +105,26 @@ ggplot(accidents, aes(x = day_of_week, y = total)) +
        caption = "Source: Prince George's County Accident Data")
 ```
 
-### Task 2 (2 points)
+### Task 3 (2 points)
 Based on the day-of-week analysis, which day(s) have the highest and lowest average accidents? Why might these patterns exist?
-
-ANSWER HERE
+ 
+ANSWER HERE Typically, Fridays and Saturdays have the highest average accidents, while Sundays tend to have the lowest. This could be due to society's general lack of schedule and routine on the weekends, with people frequently traveling, driving family around, or adults having the chance to drink alcohol. 
 
 ## Calculating Z-Scores
 
-Now, let's calculate z-scores for our accident totals:
+### Task 4 (2 points)
+
+Now, using the accidents dataframe, add three columns using `mutate()`: mean_accidents, sd_accidents and z_score, based on the example from class.
 
 ```{r calculate-z-scores}
 # Calculate z-scores for total accidents
 accidents <- accidents |>
   mutate(
-    mean_accidents = mean(total),
-    sd_accidents = sd(total),
+    mean_accidents = mean(total, na.rm = TRUE),
+    sd_accidents = sd(total, na.rm = TRUE),
     z_score = (total - mean_accidents) / sd_accidents
   )
+  
 
 # Display the data with z-scores
 accidents |>
@@ -158,10 +155,10 @@ unusual_days |>
   kable(digits = 2)
 ```
 
-### Task 3 (3 points)
+### Task 5 (3 points)
 Choose one of the top 10 unusual days and research what might have happened on that date. Look for weather events, holidays, major incidents, or other factors that could explain the unusual number of accidents. Briefly describe your findings and how you would incorporate this context into a story.
 
-ANSWER HERE
+ANSWER HERE One of the most unusual high-accident days likely coincides with the Halloween weekend. This could be due to the rise in travel, people walking on the street, or alcohol and drug consumption by drivers. This could be confirmed by police reports and court records, genuine and relaible sources, into the story. 
 
 Let's visualize these unusual days:
 
@@ -182,15 +179,16 @@ ggplot(accidents, aes(x = date, y = total, color = abs(z_score) > 2)) +
 
 ## Day of Week Patterns
 
-Let's calculate z-scores that account for day of week patterns:
+### Task 6 (3 points)
+
+Let's calculate z-scores that account for day of week patterns based on the same pattern as above:
 
 ```{r day-of-week-z-scores}
-# Calculate day-of-week adjusted z-scores
 accidents <- accidents |>
   group_by(day_of_week) |>
   mutate(
-    dow_mean = mean(total),
-    dow_sd = sd(total),
+    dow_mean = mean(total, na.rm = TRUE),
+    dow_sd = sd(total, na.rm = TRUE),
     dow_z_score = (total - dow_mean) / dow_sd
   ) |>
   ungroup()
@@ -207,10 +205,10 @@ unusual_dow |>
   kable(digits = 2)
 ```
 
-### Task 4 (3 points)
+### Task 7 (3 points)
 Compare the days that have extreme z-scores overall versus those with extreme day-of-week z-scores. How do these lists differ? What journalistic insights can you draw from comparing these two different approaches to measuring "unusual" days?
 
-ANSWER HERE
+ANSWER HERE The overall extreme z-scores identify days that are unusual compared to the entire dataset, while the day-of-the-week data shows specific days with accidents that stood out compared to the mean. While Fridays tend to have higher crash rates, a Monday with Friday-level crashes would stand out in the day-of-the-week adjusted analysis.A good insight to consider is what is actually out of the norm, which are predictable, versus truly abnormal stats. 
 
 Let's see how many unusual days we have for each day of the week:
 
@@ -286,10 +284,10 @@ unusual_monthly |>
   kable(digits = 2)
 ```
 
-### Task 5 (2 points)
+### Task 8 (2 points)
 Based on the monthly pattern analysis, which months have the highest and lowest average accidents? Develop a hypothesis about why these seasonal patterns exist.
 
-ANSWER HERE
+ANSWER HERE The months with the highest averages are the last three, October, November, and December, as well as May. The spike may occur in May October, with the ending and beginning of the local school year. People may have trouble adjusting to the new traffic schedule with and without buses on the roads. November and December make sense as well, as people must adjust to the onset of ice and snow in the area and are traveling for the holidays. The months with the lowest accidents are January and March, which may have to do with many people staying inside for winter breaks in January and spring breaks in March. 
 
 ## Identifying Extreme Outliers
 
@@ -311,12 +309,19 @@ if(nrow(extreme_outliers) > 0) {
 }
 ```
 
-### Task 6 (2 points)
+### Task 9 (2 points)
 For the extreme outliers identified (z-scores beyond ±3), what do they have in common?
 
-ANSWER HERE
+ANSWER HERE The extreme outliers in the mix all occur on holiday weekends, and Friday and Saturday in general. 
 
 ## Your Best Story Pitch
 
-### Task 7 (5 points)
-Based on all the analyses performed, craft your best story pitch, including a headline and lede. Be sure to include what kinds of sources/people you'd talk to for the story.
+### Task 10 (5 points)
+Based on all the analyses performed, craft your best story pitch, including a headline and lede. Be sure to include what kinds of sources/people you'd talk to for the story. 
+"Staying Safe on the Road During the Holiday Season"
+With the onslaught of travel and slippery weather throughout November and December, accident rates have been shown to skyrocket in comparison to the rest of the year. In order to keep safe, awareness of the data and upcoming weather are imperative to remaining vigilant on the roads. 
+
+Some things I could examine for this story are why crash totals rise sharply in the last three months of the year, how earlier sunsets affect evening commute safety, the impact of holiday shopping traffic and family travel.
+I could speak with the Prince George’s County Police Department traffic safety officials, Maryland State Highway Administration representatives, or local meteorologists. 
+
+
