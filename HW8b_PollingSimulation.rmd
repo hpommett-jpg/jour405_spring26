@@ -1,0 +1,140 @@
+---
+title: "HW8b: Polling Simulation"
+---
+
+In class, you simulated polling estimates for the share of Americans who are religiously unaffiliated — a group that makes up about 36% of the population. In this assignment, you'll run the same simulation for a different group: White Evangelicals, who make up roughly 10% of the population.
+
+That difference matters more than it might seem. When a proportion is close to 50%, samples tend to be pretty well-behaved. When it's much smaller — or much larger — samples can behave differently, especially at small sizes. Your job is to run the simulation, compare what you find to the in-class results, and think carefully about what it means for reporting on religion and politics.
+
+### Task 1: Load the tidyverse
+
+```{r}
+library(tidyverse)
+```
+
+### Task 2: Load the CES data
+
+Load the CES 2024 religion dataset from the same URL as the in-class activity and save it to a dataframe called `ces`:
+
+`https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/ces_2024_religion.csv`
+
+```{r}
+ces <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/ces_2024_religion.csv")
+```
+
+### Task 3: Calculate the population proportion
+
+Create a new column called `evangelical` that is `TRUE` if a respondent's `trad` value is `"White Evangelical"` and `FALSE` otherwise. Then calculate the proportion of the full dataset that is White Evangelical and save it as `population_proportion`.
+
+```{r}
+ces <- ces %>%
+  mutate(evangelical = trad == "White Evangelical")
+
+population_proportion <- ces %>%
+  summarize(prop = mean(evangelical, na.rm = TRUE)) %>%
+  pull(prop)
+```
+
+Write down this value. How does it compare to the unaffiliated proportion (about 0.36) from the in-class activity?
+
+ANSWER HERE The proportion of White Evangelicals in the data set is about 0.10. This is much smaller than the unaffiliated proportion from the in-class activity, which was about 0.36. Because White Evangelicals make up a smaller proportion of the population, estimates from samples, especially smaller ones, is more variable and less stable than the estimates for larger groups.
+
+### Task 4: Take a single small sample
+
+Use `set.seed(42)` and sample 50 rows from `ces`. Save it as `sample_50`. Calculate the proportion of White Evangelical respondents in your sample.
+
+```{r}
+set.seed(42)
+
+sample_50 <- ces %>%
+  slice_sample(n = 50)
+
+sample_proportion <- sample_50 %>%
+  summarize(prop = mean(evangelical, na.rm = TRUE)) %>%
+  pull(prop)
+
+sample_proportion
+```
+
+How close is your sample estimate to the population proportion? How does the accuracy compare to what you saw with the unaffiliated group in class?
+
+ANSWER HERE The sample proportion of White Evangelicals in my sample of 50 respondents was 0.16, which is higher than the population proportion of about 0.10. This means the sample overestimates the true population share by about 6 percentage points. With a small sample size, random variation can cause the estimate to differ slightly from the actual value. Compared to the unaffiliated group in class, the estimate for White Evangelicals is less stable because that group makes up a smaller portion of the population, so smaller samples may include more or fewer of them through randomization.
+
+### Task 5: Take a single larger sample
+
+Use `set.seed(1966)` and sample 500 rows. Save it as `sample_500`. Calculate the proportion of White Evangelical respondents in this sample.
+
+```{r}
+set.seed(1966)
+
+sample_500 <- ces %>%
+  slice_sample(n = 500)
+
+sample_500_proportion <- sample_500 %>%
+  summarize(prop = mean(evangelical, na.rm = TRUE)) %>%
+  pull(prop)
+
+sample_500_proportion
+```
+
+Did the larger sample improve the estimate? How does the improvement compare to what you saw in class?
+
+ANSWER HERE The proportion of White Evangelicals in the sample of 500 respondents was 0.09, which is very close to the population proportion of about 0.10. This shows that the larger sample improved the estimate compared to the sample of 50, which produced 0.16 and was farther from the true value. Increasing the sample size reduces random variation, making the estimate more accurate. This is similar to what we saw in class with the unaffiliated group, where larger samples also produced estimates closer to the true population proportion.
+
+### Task 6: Simulate many polls
+
+The code below runs the same simulation as the in-class activity, but using your `evangelical` column. Run it as-is.
+
+```{r}
+set.seed(42)
+
+simulate_polls <- function(data, sample_size, n_simulations = 1000) {
+  proportions <- replicate(n_simulations, {
+    s <- data |> sample_n(sample_size)
+    mean(s$evangelical)
+  })
+  tibble(proportion = proportions, sample_size = sample_size)
+}
+
+simulations_50 <- simulate_polls(ces, 50)
+simulations_500 <- simulate_polls(ces, 500)
+```
+
+### Task 7: Visualize the simulation results
+
+Create two histograms side by side using the code structure from class. Add a vertical line at `population_proportion`. Make sure to update the title and subtitle to reflect that this simulation is about White Evangelicals.
+
+```{r}
+simulations <- bind_rows(simulations_50, simulations_500)
+
+ggplot(simulations, aes(x = proportion)) +
+  geom_histogram(binwidth = 0.02, fill = "steelblue", color = "white") +
+  geom_vline(xintercept = population_proportion, color = "red", linewidth = 1) +
+  facet_wrap(~sample_size, ncol = 2) +
+  labs(
+    title = "Simulated Polling Estimates of White Evangelicals",
+    subtitle = "Distribution of sample estimates from repeated polls",
+    x = "Estimated Proportion White Evangelical",
+    y = "Number of Simulated Polls"
+  )
+```
+
+### Task 8: Reflect on what you see
+
+**Describe the shape of the n=50 histogram.** Is it as symmetric as the unaffiliated histogram from class? Why do you think that is, given that White Evangelicals make up only about 10% of the population?
+
+ANSWER HERE The n=50 histogram is somewhat skewed and is not as symmetric as the unaffiliated histogram from class. Because White Evangelicals make up only about 10% of the population, small samples often include very few of them. This can cause the estimates to appear more uneven and cluster near lower values. Comparatively, the unaffiliated group was about 36% of the population, which made the sampling distribution more balanced and symmetric.
+
+**Compare the n=50 and n=500 histograms for this group.** How much does the distribution change with a larger sample? Is the improvement bigger or smaller than what you saw in class with the unaffiliated group?
+
+ANSWER HERE The n=500 histogram is much narrower and more concentrated around the actual proportion of the population compared to the first sample. This shows that increasing the sample size reduces variation and allows more accurate results. The improvement is noticeable, though somewhat smaller than what was originally shown in the unaffiliated group; White Evangelicals make up a smaller share of the population, so there is still some variability even with larger samples.
+
+**A news organization wants to report on White Evangelical voters using a poll of 200 people.** Based on your simulations, roughly how many White Evangelical respondents would that poll be likely to include? What does that suggest about the reliability of estimates for smaller subgroups?
+
+ANSWER HERE If White Evangelicals make up approximately 10% of the population, a poll of 200 people would likely include about 20 White Evangelical responses. This subgroup would be relatively small, so estimates on their opinions could be less accurate and more affected by random variation. This shows why reporting on small subgroups can be difficult with smaller polls.
+
+**Imagine you are covering the 2028 presidential election and a campaign shares a poll showing White Evangelical support at 78%.** The poll sampled 400 people. Based on everything you've seen in this assignment and in class, what would you want to know before reporting that number?
+
+ANSWER HERE Before reporting that number in any kind of official news piece, I would want to know how many White Evangelical respondents were responsive in the sample. Since White Evangelicals make up about 10% of the population, a poll of 400 people might only include around 40 of them and not be close to accurate. I would also want to know the poll’s standard deviation from the subgroup, what method was used for the sampling, and whether the poll was weighted. Because subgroup samples can be small, the estimate of 78% could be less reliable and may need a resampling.
+
+When finished, save your work, switch to GitHub Desktop, then add, commit and push your changes to GitHub and submit the URL of the notebook in ELMS.
