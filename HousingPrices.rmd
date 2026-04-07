@@ -59,7 +59,7 @@ new_stats
 
 **Answer this question:** How does the new average compare to the prior average of $285,000? How much higher is it in dollar terms? Does that seem like a big difference to you? What else would you want to know?
 
-ANSWER HERE The new average is higher, $19,500 more. This does seem like a big difference, but I would want to know the statistical significance as well before publishing anything. I do think the decrease in standard deviation is important though, and could be examined more to be a sotry.
+ANSWER HERE This is definitely a noticeable increase, but not huge given that home prices often vary by tens of thousands of dollars. I’d want to know whether this difference is statistically significant and whether it could be explained by other factors like market trends over the past few years.
 
 ### Task 3: Visualize the distribution (1 point)
 
@@ -95,9 +95,9 @@ ggplot(home_data, aes(x = sale_price)) +
   )
 ```
 
-**Answer this question:** Look at where the old average (red dashed line) falls relative to the new sales. How many of the 14 homes sold for more than the old average? What does the histogram tell you about the spread of the new prices?
-
-ANSWER HERE All of the homes sold above the old average. The histogram shows that all houses have gone up in price, and that the minimum price is now $5,000 higher than the old average. 
+**Answer this question:** Look at where the old average (red dashed line) falls relative to the new sales. How many of the 14 homes sold for more than the old average? What does the histogram tell you about the spread of the new prices? 
+ 
+ANSWER HERE Every home sold for more than the old average price after the introduction of the light rail line. The histogram shows that the data is slightly right-skewed, with the number of home prices leaning towards the old average. 
 
 ### Task 4: Set up and perform a hypothesis test (2 points)
 
@@ -105,8 +105,8 @@ This is where we formally test the officials' claim. Fill in the REPLACE_ME valu
 
 **Hypotheses:**
 
-- **H₀ (Null):** REPLACE_ME
-- **H₁ (Alternative):** REPLACE_ME
+- **H₀ (Null):** The true mean home price is $285,000
+- **H₁ (Alternative):** The true mean home price is greater than $285,000
 
 ```{r}
 # Set the significance level
@@ -125,7 +125,7 @@ t_test_result
 
 **Answer this question:** Look at the p-value. Is it less than our alpha of 0.05? What does this mean for our null hypothesis — can we reject it? What can we now say about the officials' claim?
 
-ANSWER HERE
+ANSWER HERE The p-value is well below 0.05, which means we can reject the null hypothesis. This suggests there is strong statistical evidence that home prices have increased since the transit line opened. The officials’ claim is supported by the data.
 
 ### Task 5: Interpret the results with a confidence interval (2 points)
 
@@ -155,7 +155,8 @@ story_stats
 
 **Answer this question:** The 95% confidence interval tells us the range where the true average home price likely falls. Does that range include the old average of $285,000? What does that tell you?
 
-ANSWER HERE
+ANSWER HERE The 95% confidence interval does not include $285,000. The old average is no longer the true current average, reinforcing the conclusion that prices increased.
+
 
 ### Task 6: Calculate the effect size (3 points)
 
@@ -166,7 +167,7 @@ We've established that the increase is statistically significant — it's real, 
 Replace the REPLACE_ME values.
 
 ```{r}
-effect_size <- (mean(new_prices) - REPLACE_ME) / REPLACE_ME
+effect_size <- (mean(new_prices) - prior_mean / prior_sd)
 
 effect_size_label <- case_when(
   abs(effect_size) < 0.2 ~ "Negligible",
@@ -185,19 +186,19 @@ tibble(
 
 **Answer this question:** The effect size is "medium." In dollar terms, the average increase is about $19,500. But remember that the standard deviation of home prices in this neighborhood was $32,000 *before* the transit line — meaning prices already varied by tens of thousands of dollars from sale to sale. Given that context, does a $19,500 increase seem large or modest? How does the effect size help you think about this differently than just looking at the dollar amount?
 
-ANSWER HERE
+ANSWER HERE The effect size is medium, meaning the increase is definitely there but nothing extremely impactful. A 19,500 dollar increase sounds large, but compared to the 32,000 dollar standard deviation, it’s relatively modest. The effect size helps show that while the increase is real, it’s a more moderate shift.
 
 ### Task 7: What's the story? (6 points)
 
 You now have all the statistical evidence. But writing the story requires more than numbers — it requires judgment.
 
-**Part A:** The local officials are going to claim the transit line increased home values. Based on your analysis, is that claim supported? Write 2-3 sentences for the top of your story that accurately reflect both the statistical significance AND the effect size. Don't just echo the officials' talking points — interrogate them.
+**Part A:** The local officials are going to claim the transit line increased home values. Based on your analysis, is that claim supported? Write 2-3 sentences for the top of your story that accurately reflect both the statistical significance AND the effect size. Don't just echo the officials' talking points — interrogate them. 
 
-ANSWER HERE
+ANSWER HERE  Home prices in the neighborhood have increased since the new transit line opened, rising by about 19,500 dollars on average. This data is statistically significant, meaning it’s unlikely to be because of some random chance. However, the size of the increase is moderate compared to the typical variation in home prices, suggesting the new transit line may be only one factor among several other factors. 
 
 **Part B:** A $19,500 increase is real and statistically significant, but what *else* could explain rising home prices in this neighborhood? List at least two alternative explanations that a good reporter would want to investigate before attributing the increase entirely to the transit line.
 
-ANSWER HERE
+ANSWER HERE  I would want to examine overall trends in housing prices for the current market. I would also want to investigate the interest rates on the houses; if the transit line is increasing prices on the homes, what is holding the values back from skyrocketing with this introduction of cheap transportation nearby? What is keeping buyers from completely flocking to this neighborhood?
 
 
 When you are finished, save your work, switch to GitHub Desktop, then add, commit and push your changes to GitHub and submit the URL of the notebook in ELMS.
