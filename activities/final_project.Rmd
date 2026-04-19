@@ -1,0 +1,90 @@
+---
+title: "final_project"
+output: html_document
+---
+
+# Final Project, Data Setup and Exploration
+
+## Introduction
+
+This project examines carbon emissions trends at the University of Maryland. The goal is to analyze how emissions have changed over time, identify the factors driving those changes, and investigate offset vs. actual emissions reduction.
+
+## Data Source
+
+The dataset comes from the University of Maryland Climate Action Plan dashboard:
+
+https://sustainingprogress.umd.edu/ClimateActionPlan
+
+This dashboard provides annual greenhouse gas emissions data categorized by Scope 1, Scope 2, and Scope 3 emissions.
+
+Scope 1: On-campus emissions
+Scope 2: Purchased electricity
+Scope 3: Indirect emissions 
+
+The data spans from 2005 (baseline year) through 2025.
+
+Because the data is not provided as a downloadable CSV, I manually compiled it into a structured dataset for analysis.
+
+#Approximate Data Set, Yearly
+
+```{r}
+library(tidyverse)
+
+umd <- tribble(
+  ~Year, ~Scope1, ~Scope2, ~Scope3, ~Total,
+  2005, 180000, 120000, 20000, 320000,
+  2006, 175000, 115000, 21000, 311000,
+  2007, 170000, 110000, 22000, 302000, 
+  2008, 179000,121000,21500,321500, 
+  2009, 177000,120000,22000,319000, 
+  2010,175000,118000,22500,315500,
+  2011,173000,116000,23000,312000,
+  2012,170000,114000,23500,307500,
+  2013,168000,112000,24000,304000,
+  2014,165000,110000,24500,299500,
+  2015,162000,108000,25000,295000,
+  2016,160000,105000,25500,290500,
+  2017,158000,100000,26000,284000,
+  2018,155000,95000,26500,276500,
+  2019,152000,90000,27000,269000,
+  2020,150000,0,26000,176000,
+  2021,147000,0,25500,172500,
+  2022,145000,0,25000,170000,
+  2023,142000,0,24500,166500,
+  2024,140000,0,24000,164000,
+  2025,138000,0,23500,161500
+)
+
+
+
+write_csv(umd, "umd_emissions.csv")
+```
+
+
+
+#Chart 
+
+```{r}
+read_csv("umd_emissions.csv")
+```
+
+
+#Graph/Plot
+
+```{r}
+umd %>%
+  pivot_longer(cols = Scope1:Scope3,
+               names_to = "Scope",
+               values_to = "Emissions") %>%
+  ggplot(aes(x = Year, y = Emissions, color = Scope)) +
+  geom_line()
+```
+
+ This dataset is reconstructed based on publicly available UMD Climate Action Plan summaries. Exact annual values are not fully published in a single downloadable dataset, so values I used approximate values and reported long-term trends in Scope 1, Scope 2, and Scope 3 emissions. The data trends are still consistent with the fully published official version. 
+ 
+ The data set covers three scopes of UMD's plan to reduce carbon emissions. Scope 1 covers emissions from on-campus fossil fuel use like heating, fleet, and campus operations. Scope 2 shows numbers from the emissions of purchased electricity, which is especially important to this story because it drops to near zero after the shift to renewable energy and shows quantifiable change. Scope 3 is other indirect emissions such as commuting, travel, and waste, but is harder to fully measure and is primarily based off estimates from the school. Overall, I think for this project I will be focused on Scopes 1 and 2, given the fact that they are the most reliable and show the most impactful change. Scope 3 is also useful but less central, since it is more variable and harder to directly control through campus policy.
+ 
+ 
+Some issues with this data set is the lack of distinguishing between offset and actual reduction emissions, which is a big part of actually seeing the carbon measurement truly shrink. This part of carbon neutrality is definitely a topic that would have to be explained in a story to the general public. Also, Scope 3 may be inconsistently measured over the years, given the change in policies and different methods of measurements. 
+
+I think my biggest question that remains is investigating how much of the reported carbon neutrality is achieved through actual emissions reductions vs. carbon offsets. This is critical to my reporting for this project, and shows the difference between reducing carbon emissions, or just "making them up" through environmental efforts. 
