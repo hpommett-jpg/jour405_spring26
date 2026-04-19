@@ -6,47 +6,21 @@ Remember how we talked about people killing each other more when it's hot outsid
 
 ### Task 1: Load the tidyverse
 
-```{r}
-library(tidyverse)
-```
 
 
 ### Task 2: Load the dataset from [https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/pg_murder_temps.csv](https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/pg_murder_temps.csv)
-```{r}
-pg_murders <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/pg_murder_temps.csv")
-```
 
 
 ### Task 3: Use `summarize()` and the `cor()` function to calculate the correlation between murders and temperature, using the pearson method.
 
-```{r}
-pg_murders %>%
-  summarize(correlation = cor(temperature, murders, method = "pearson"))
-```
-
 
 ### Task 4: Create a scatterplot of murders and temperature, using `geom_point()`. Your aes() will have temperatures on the x axis, murders on the y axis and add a label for the month (so label=month inside the aes()).
-
-```{r}
-ggplot(pg_murders, aes(x = temperature, y = murders, label = month)) +
-  geom_point()
-```
-
 
 
 ### Task 5: Add labels to the scatterplot using geom_text(). Inside geom_text() put the same aes() as geom_point in Task 4, then after the aes() add size = 5.
 
-```{r}
-pg_murders |>
-  ggplot() +
-(aes(x=murders,y=temperature)) +
-  geom_smooth (aes(x=murders,y=temperature), method = 'lm') +
-  geom_text(aes(x=murders,y=temperature, size = 5, label = month) ) 
-```
-
-
 
 ### Task 6: Describe the results of both the correlation calculation and the scatterplot.
 
-The correlation calculation is in the middle, showing at 58%. This kind of matches the scatterplot, with warmer months typically going above 35 murders. However, December and October were still on the higher side of murders, which is odd considering the lower temperatures. This shows that, while correlated, there must be other driving factors aside from temperatures slightly increasing murder rates during summer months.
+
 When you are done, save your work, switch to GitHub Desktop, then add, commit and push your changes to GitHub and submit the URL of the notebook in ELMS.
