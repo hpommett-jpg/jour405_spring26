@@ -1,0 +1,102 @@
+---
+title: "Identifying Schools with Biggest Differences in Math Test Scores, Part 2"
+author: "HOLLY"
+---
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+options(scipen = 999)
+```
+
+### Introduction
+
+In the class activity, you tested a school board member's claim using data from Montgomery County, Pa. — and found a model that didn't hold up. Now you'll run the same analysis using data from Montgomery County, Md. Your job is to evaluate whether the Maryland data tells a different story, and what that means for how you'd report on the claim.
+
+### Loading the Data
+
+```{r}
+schools <- read_csv("https://raw.githubusercontent.com/dwillis/jour405_files/refs/heads/main/montgomery_md.csv")
+```
+
+### Task 1: Examine the Data First (2 points)
+
+Before you plot anything, look at the data — you know why by now.
+
+```{r}
+summary(schools$`FARMS Pct`)
+schools |> arrange(desc(`FARMS Pct`)) |> head(10)
+```
+
+Are there any data quality issues like the ones you found in the Pennsylvania data? How does the distribution of FARMS percentages compare between the two counties? Note anything that concerns you or gives you confidence in the data.
+
+The Montgomery County, Maryland dataset has far more realistic values, leading me to believe this is a more legit and well-done reporting process in comparison. The percentage values are reasonable, and there are no obvious errors or missing data. The FARMS percentages also vary widely, which is useful for analyzing the math scores for a story. However, FARMS is only one factor affecting performance, different school levels may need separate analysis, and the dataset does not list a year. Overall, the Maryland data gives more confidence for testing the claim, but results should still be interpreted carefully. 
+
+
+### Task 2: Create a Scatterplot and Compare (5 points)
+
+Replace the REPLACE_ME value with the correct variable name to create a scatterplot of FARMS percentage vs. math scores for Montgomery County, Md.
+
+```{r}
+schools |>
+  ggplot(aes(x = `FARMS Pct`, y = `% Met or Exceeded Math Expectations`)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(x = "FARMS Percentage", y = "% Met or Exceeded Math Expectations",
+       title = "Math Scores vs. FARMS Percentage, Montgomery County MD")
+```
+
+Describe what you see. Then compare this scatterplot specifically to the Pennsylvania one: what differences do you notice in the direction, strength, and spread of the relationship? The two counties share a name and are both suburban — what might explain why they look so different?
+
+The scatterplot for Montgomery County, MD, has a much cleaner central line in relation to the main concentration of data points. There are no extreme outliers that dramatically shoot off from the main spread, like the Pennsylvania example. The direction for the Maryland graph shows a much more consistent pattern. Overall, errors in reporting are probably the most likely to blame for the inconsistency in the PA example, given the extreme differences. 
+
+
+### Task 3: Linear Regression Model (5 points)
+
+Replace the REPLACE_ME value with the correct variable name to run a linear regression model predicting math scores from FARMS percentage.
+
+```{r}
+model <- lm(`% Met or Exceeded Math Expectations` ~ `FARMS Pct`, data = schools)
+summary(model)
+```
+
+Report the three key statistics: the p-value, the Adjusted R-squared, and the coefficient for FARMS Pct. Then interpret them together — not separately. What does the combination of these three numbers tell you about the relationship between poverty and math scores in Montgomery County, Md.? Is this model worth using? How does it compare to the Pennsylvania model?
+
+The p-value is very small, the Adjusted R-squared is 0.6734, and the FARMS coefficient is -0.59511. This information put together means there is a strong correlation between higher poverty rates and lower math scores in Montgomery County, Maryland. This model is worth using, and seems to provide much more readable, accurate results. For every 1% increase in FARMS, math scores drop by about 0.6%. Overall, this makes the model useful and much stronger than the Pennsylvania model, where poverty did not explain scores nearly as well.
+
+### Task 4: Identifying Schools with the Biggest Residuals (6 points)
+
+Replace the REPLACE_ME values with the correct variable names to calculate predicted values, residuals, and absolute residuals for each school. Then arrange the schools in descending order of absolute residuals.
+
+```{r}
+schools <- schools |>
+  mutate(
+    predicted = predict(model),
+    residual = `% Met or Exceeded Math Expectations` - predicted,
+    abs_residual = abs(residual)
+  ) |>
+  arrange(desc(abs_residual))
+
+head(schools |> select(1, `FARMS Pct`, `% Met or Exceeded Math Expectations`, predicted, residual), 10)
+```
+
+Identify the school with the largest positive residual (doing much better than the model predicts) and the school with the largest negative residual (doing much worse). For each school, find its zip code and look it up on [CensusReporter.org](https://censusreporter.org).
+
+For each of the two schools, answer:
+- What does the demographic and economic profile of the zip code look like?
+- Does anything in that profile help explain why the school is over- or under-performing the model?
+- What would your first reporting question be to the principal of that school?
+
+Fox Chapel Elementary is doing by far the best, with a nearly +30 points compared to the expected amount. The area looks to be demographically diverse, with near even splits between white, Black, Hispanic, and Asian people. It also has a good median income, with most people being middle to upper-middle class. The housing and familial aspects of Fox Chapel Elementary are stable, meaning despite the higher FARMS pct, the learning environment for kids is healthy. My first question for the principal would be what programs, teaching strategies, or family support systems have helped students succeed above expectations in math?
+
+
+Germantown Elementary is doing the worst, the the residual significantly lower than the expected. However, both schools, according to my research, have the same zip code. Obviously, this is concerning that one school is doing far worse despite being in the same area. For this school, I would want to ask the principal more about the distribution of the funding they receive and the experience of the teachers, to help me better understand why the FARMS program is not working here and which other factors could be at play. 
+
+
+### Task 5: Evaluate the Model and Write the Pitch (7 points)
+
+You've now run this analysis on two counties. Return to the school board member's claim: that elementary schools with fewer students on free and reduced-price meals do better on standardized math tests.
+
+Write a short story pitch of 4-6 sentences that addresses all of the following: Does the Maryland data support or contradict the claim? How does it compare to what you found in Pennsylvania? What would you ask the school board member if you called them for comment? And what's the most interesting specific finding from your residuals analysis: which school would you want to visit first, and why?
+
+Montgomery County, Maryland data does support the school board member’s claim, showing that schools with higher FARMS percentages generally have lower math scores. Unlike the Pennsylvania model, where the poverty and FARMS data was very inconsistent with expectations, the Maryland data showed a much stronger relationship and made poverty a meaningful predictor of performance. If I called the school board member for comment, I would ask why they think the relationship is so much stronger in Maryland than in Pennsylvania, and whether other factors beyond poverty should also be considered. I think the most interesting result from the residual analysis was Fox Chapel Elementary, which had almost 30 points higher than what was predicted despite their dependence on FARMS. I would want to visit Fox Chapel first to see what programs, teaching methods, or community support systems may be helping students outperform the model, when in comparison other schools in the same area are not doing as well.
