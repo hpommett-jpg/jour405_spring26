@@ -87,20 +87,20 @@ umd <- umd %>%
   mutate(
     gross_emissions = Scope1 + Scope2 + Scope3,
 
-    # Structural electricity shift after 2020 treated as accounting-driven reduction signal
+    # Structural electricity shift after 2020
     electricity_shift = lag(Scope2, default = first(Scope2)) - Scope2,
     electricity_shift = ifelse(electricity_shift < 0, 0, electricity_shift),
 
-    # Proxy for offsets/credits (clearly labeled as estimate)
+    # Offsets
     estimated_offsets = case_when(
       Year >= 2020 ~ electricity_shift * 0.8,
       TRUE ~ 0
     ),
 
-    # Net emissions after accounting adjustments
+    # Net emissions after adjustments
     net_emissions = gross_emissions - estimated_offsets,
 
-    # Key metrics for hypothesis testing
+    # Hypothesis testing
     gap = gross_emissions - net_emissions,
     offset_ratio = estimated_offsets / gross_emissions,
 
