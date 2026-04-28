@@ -1,0 +1,206 @@
+Tests I could run: Based on the types of statistical tests and data analysis techniques covered in this course, I think a few of them appear appropriate for analyzing University of Maryland’s emissions data and testing the hypothesis that progress toward carbon neutrality increasingly relies on accounting mechanisms rather than direct emissions reductions.
+
+Generally, I need to expand more, as I took note of the comments about my data being too narrow for comparison. However, for this final project, I need to examine gaps between different scopes for a multitude of reasons, making me want to consider comparing 2 factors on the same graph.
+
+Most of my data set concerns change over time as UMD changes their carbon neutrality methods. A first step in the analysis is to examine trends over time using line graphs. This includes plotting Scope 1, Scope 2, and Scope 3 emissions across the 20 year time period, as well as other measures such as gross emissions, net emissions, and the gaps that are notable between them. This will be useful for identifying whether emissions are generally decreasing, and whether structural changes (like the elimination of Scope 2 emissions after 2020) align with policy shifts rather than gradual reductions.
+
+Linear regression will be absolutely necessary, considering a huge portion of my conclusion will be based off of noticing and comparing trends. It will also be useful to examine mean comparisons and proportional analysis of the impact of different scopes. 
+
+One limitation of this analysis is that some variables, particularly offsets and renewable energy credits, are not directly published in one readable dataset and has to be approximated based on the available trends on the website. Due to this limitation, the analysis is better suited for identifying patterns and relationships rather than producing exact measurements of emissions accounting.
+
+
+
+---
+title: "final.project.2"
+output: html_document
+---
+
+---
+title: "final_project"
+output: html_document
+---
+
+# Final Project, Data Setup and Exploration
+
+## Introduction
+---
+title: "UMD Carbon Emissions and Offset Dependence"
+output: html_document
+---
+
+# Introduction
+
+This project examines greenhouse gas emissions trends at the University of Maryland from 2005 to 2025. The goal is to analyze how emissions have changed over time and evaluate whether reported progress toward carbon neutrality reflects actual emissions reductions or increasing reliance on accounting mechanisms such as renewable energy credits and offsets.
+
+# Hypothesis
+
+UMD's reported progress toward carbon neutrality increasingly relies on purchased offsets and accounting adjustments rather than direct emissions reductions, meaning the gap between gross emissions and net reported emissions has grown over time.
+
+# Data Source
+
+The dataset is based on the University of Maryland Climate Action Plan dashboard:
+https://sustainingprogress.umd.edu/ClimateActionPlan
+
+Because the dashboard does not provide a downloadable full CSV, the data was manually reconstructed from reported annual emissions summaries. Values are consistent with published trends but should be interpreted as approximations for analytical purposes.
+
+This dashboard provides annual greenhouse gas emissions data categorized by Scope 1, Scope 2, and Scope 3 emissions. 
+Scope 1: On-campus emissions 
+Scope 2: Purchased electricity 
+Scope 3: Indirect emissions The data spans from 2005 (baseline year) through 2025.
+
+# Load libraries
+
+```{r}
+
+
+library(tidyverse)
+
+umd <- tribble(
+  ~Year, ~Scope1, ~Scope2, ~Scope3, ~Total,
+  2005, 180000, 120000, 20000, 320000,
+  2006, 175000, 115000, 21000, 311000,
+  2007, 170000, 110000, 22000, 302000, 
+  2008, 179000,121000,21500,321500, 
+  2009, 177000,120000,22000,319000, 
+  2010,175000,118000,22500,315500,
+  2011,173000,116000,23000,312000,
+  2012,170000,114000,23500,307500,
+  2013,168000,112000,24000,304000,
+  2014,165000,110000,24500,299500,
+  2015,162000,108000,25000,295000,
+  2016,160000,105000,25500,290500,
+  2017,158000,100000,26000,284000,
+  2018,155000,95000,26500,276500,
+  2019,152000,90000,27000,269000,
+  2020,150000,0,26000,176000,
+  2021,147000,0,25500,172500,
+  2022,145000,0,25000,170000,
+  2023,142000,0,24500,166500,
+  2024,140000,0,24000,164000,
+  2025,138000,0,23500,161500
+)
+
+
+
+write_csv(umd, "umd_emissions.csv")
+```
+
+
+
+#Chart 
+
+```{r}
+read_csv("umd_emissions.csv")
+```
+```{r}
+umd <- umd %>%
+  mutate(
+    gross_emissions = Scope1 + Scope2 + Scope3,
+
+    # Structural electricity shift after 2020 treated as accounting-driven reduction signal
+    electricity_shift = lag(Scope2, default = first(Scope2)) - Scope2,
+    electricity_shift = ifelse(electricity_shift < 0, 0, electricity_shift),
+
+    # Proxy for offsets/credits (clearly labeled as estimate)
+    estimated_offsets = case_when(
+      Year >= 2020 ~ electricity_shift * 0.8,
+      TRUE ~ 0
+    ),
+
+    # Net emissions after accounting adjustments
+    net_emissions = gross_emissions - estimated_offsets,
+
+    # Key metrics for hypothesis testing
+    gap = gross_emissions - net_emissions,
+    offset_ratio = estimated_offsets / gross_emissions,
+
+    baseline = first(gross_emissions),
+    percent_reduction = (1 - net_emissions / baseline) * 100
+  )
+
+
+#Graph/Plot
+
+umd %>%
+  pivot_longer(cols = Scope1:Scope3,
+               names_to = "Scope",
+               values_to = "Emissions") %>%
+  ggplot(aes(x = Year, y = Emissions, color = Scope)) +
+  geom_line()
+```
+
+ This dataset is reconstructed based on publicly available UMD Climate Action Plan summaries. Exact annual values are not fully published in a single downloadable dataset, so values I used approximate values and reported long-term trends in Scope 1, Scope 2, and Scope 3 emissions. The data trends are still consistent with the fully published official version. 
+ 
+ The data set covers three scopes of UMD's plan to reduce carbon emissions. Scope 1 covers emissions from on-campus fossil fuel use like heating, fleet, and campus operations. Scope 2 shows numbers from the emissions of purchased electricity, which is especially important to this story because it drops to near zero after the shift to renewable energy and shows quantifiable change. Scope 3 is other indirect emissions such as commuting, travel, and waste, but is harder to fully measure and is primarily based off estimates from the school. Overall, I think for this project I will be focused on Scopes 1 and 2, given the fact that they are the most reliable and show the most impactful change. Scope 3 is also useful but less central, since it is more variable and harder to directly control through campus policy.
+ 
+ 
+Some issues with this data set is the lack of distinguishing between offset and actual reduction emissions, which is a big part of actually seeing the carbon measurement truly shrink. This part of carbon neutrality is definitely a topic that would have to be explained in a story to the general public. Also, Scope 3 may be inconsistently measured over the years, given the change in policies and different methods of measurements. 
+
+I think my biggest question that remains is investigating how much of the reported carbon neutrality is achieved through actual emissions reductions vs. carbon offsets. This is critical to my reporting for this project, and shows the difference between reducing carbon emissions, or just "making them up" through environmental efforts. 
+
+
+```{r}
+head(umd)
+```
+
+```{r}
+umd %>%
+  pivot_longer(cols = Scope1:Scope3,
+               names_to = "Scope",
+               values_to = "Emissions") %>%
+  ggplot(aes(x = Year, y = Emissions, color = Scope)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "UMD Emissions by Scope (2005–2025)",
+    x = "Year",
+    y = "Emissions"
+  )
+```
+
+```{r}
+umd %>%
+  pivot_longer(cols = c(gross_emissions, net_emissions),
+               names_to = "Type",
+               values_to = "Emissions") %>%
+  ggplot(aes(x = Year, y = Emissions, color = Type)) +
+  geom_line(size = 1) +
+  geom_point() +
+  labs(
+    title = "Gross vs Net Emissions Over Time",
+    x = "Year",
+    y = "Emissions"
+  )
+```
+
+```{r}
+ggplot(umd, aes(x = Year, y = offset_ratio)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Estimated Offset Dependence Over Time",
+    x = "Year",
+    y = "Offsets / Gross Emissions"
+  )
+```
+```{r}
+ggplot(umd, aes(x = Year, y = gap)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Gap Between Gross and Net Emissions",
+    x = "Year",
+    y = "Emissions Gap"
+  )
+```
+
+```{r}
+model_offset <- lm(offset_ratio ~ Year, data = umd)
+summary(model_offset)
+```
+
+```{r}
+model_gap <- lm(gap ~ Year, data = umd)
+summary(model_gap)
+```
+
