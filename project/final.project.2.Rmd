@@ -144,21 +144,14 @@ head(umd)
 ```
 
 ```{r}
-umd %>%
-  pivot_longer(cols = Scope1:Scope3,
-               names_to = "Scope",
-               values_to = "Emissions") %>%
-  ggplot(aes(x = Year, y = Emissions, color = Scope)) +
-  geom_line() +
-  geom_point() +
-  labs(
-    title = "UMD Emissions by Scope (2005–2025)",
-    x = "Year",
-    y = "Emissions"
-  )
-```
+ggplot(umd, aes(x = Year)) +
+  geom_line(aes(y = Scope1, color = "Scope 1")) +
+  geom_line(aes(y = Scope2, color = "Scope 2")) +
+  geom_line(aes(y = Scope3, color = "Scope 3")) +
+  labs(title = "UMD Emissions by Scope Over Time",
+       y = "Emissions",
+       color = "Scope")
 
-```{r}
 umd %>%
   pivot_longer(cols = c(gross_emissions, net_emissions),
                names_to = "Type",
@@ -173,34 +166,25 @@ umd %>%
   )
 ```
 
+
 ```{r}
-ggplot(umd, aes(x = Year, y = offset_ratio)) +
+umd <- umd %>%
+  mutate(gross_emissions = Scope1 + Scope2 + Scope3)
+
+ggplot(umd, aes(x = Year, y = gross_emissions)) +
   geom_line() +
   geom_point() +
-  labs(
-    title = "Estimated Offset Dependence Over Time",
-    x = "Year",
-    y = "Offsets / Gross Emissions"
-  )
-```
-```{r}
-ggplot(umd, aes(x = Year, y = gap)) +
-  geom_line() +
-  geom_point() +
-  labs(
-    title = "Gap Between Gross and Net Emissions",
-    x = "Year",
-    y = "Emissions Gap"
-  )
+  labs(title = "Gross Emissions Over Time")
 ```
 
 ```{r}
-model_offset <- lm(offset_ratio ~ Year, data = umd)
+model_gross <- (gross_emissions ~ Year, data = umd)
+summary(model_gross)
+```
+
+```{r}
+model_offset <- (offset_ratio ~ Year, data = umd)
 summary(model_offset)
 ```
 
-```{r}
-model_gap <- lm(gap ~ Year, data = umd)
-summary(model_gap)
-```
 
