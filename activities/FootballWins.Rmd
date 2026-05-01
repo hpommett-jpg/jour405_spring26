@@ -54,7 +54,7 @@ The coefficients tell us the estimated effect of each independent variable on th
 
 Is this a useful model, based on what you've seen? Why?
 
-ANSWER HERE
+This model is somewhat useful, but it definitely has some limitations that make it feel incomplete. The R-squared is about 0.62, which means it has a good amount of the variation in wins, and the model overall is statistically significant, which suggests that at least some of the variables are meaningfully related to team success. Points scored stands out the most, since it is statistically significant and aligns with what should be expected: teams that score more tend to win more. Yards gained has a negative and insignificant coefficient, which doesn’t really make sense and suggests the model isn’t fully capturing what actually leads to wins. Takeaways seem to have a positive effect, but they are not quite statistically significant, so it’s harder to interpret that relationship. On top of that, the average error of about two wins shows that the predictions are not fully accurate. Overall, the model does give helpful insight, especially about scoring, but it should be interpreted carefully and would need more work before being used to make strong claims.
 
 ## Correlation Analysis
 
@@ -79,9 +79,13 @@ corrplot(corr_matrix, method = "circle")
 The results from our correlation analysis show the strength of the relationships between the number of wins and factors like yards gained, takeaways, and points scored. High positive correlations indicate strong relationships where increases in one variable are associated with increases in another. Conversely, negative correlations suggest an inverse relationship. By understanding these dynamics, journalists can better explain the factors that contribute to a team's success or failure in a season.
 
 Which of these three factors - Yards Gained, Takeaways and Points Scored - have the most impact on wins? Are there any that do not seem impactful at all?
-
-ANSWER HERE
+ 
+Based on the correlation results, points scored clearly has the strongest impact on wins, with a correlation of about 0.71. This indicates a strong positive relationship, meaning teams that score more points tend to win more games, which makes sense and matches what we saw in the regression model. Takeaways also show a meaningful relationship with wins, with a moderate positive correlation of around 0.57, suggesting that teams that force more turnovers generally perform better, even if this effect was slightly weaker in the regression.
+On the other hand, yards gained appears to be the least impactful out of the three. Its correlation with wins is only about 0.44, which is noticeably weaker than the others. While this still shows some positive relationship, it is not as strong, and combined with its poor performance in the regression model, it suggests that yards gained alone does not do a great job of explaining wins. To sum it up, points scored has the most impact, takeaways have a moderate impact, and yards gained seems the least meaningful in this analysis.
 
 ## Using the Model (3 points)
 
-Without using the words "multiple regression model", describe how you could use this model to cover a team or game.
+Without using the words "multiple regression model", describe how you could use this model to cover a team or game
+
+
+This analysis could be used to explain why a team wins or loses beyond the final score. Through comparing points scored, takeaways, and yards gained, the factors that actually drove the outcome are highlighted, such as showing that a team won because they scored efficiently or forced turnovers, even if the yardage was similar. Over the course of a season, it can also help identify patterns, like teams that gain a lot of yards but don’t turn that into points, adding clearer context to your coverage.
