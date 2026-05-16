@@ -1,20 +1,8 @@
 
 
 ---
-title: "final.project.2"
-output: html_document
----
-
----
-title: "final_project"
-output: html_document
----
-
-# Final Project, Data Setup and Exploration
-
-## Introduction
----
 title: "UMD Carbon Emissions and Offset Dependence"
+author: "Holly Pommett"
 output: html_document
 ---
 
@@ -169,15 +157,51 @@ ggplot(umd, aes(x = Year, y = gross_emissions)) +
 This result here shows the sharp decline in gross emissions over time. This will be helpful in my conclusion to demonstrate the actual impact policy change had on the results in 2020. 
 
 ```{r}
-model_gross <- (gross_emissions ~ Year, data = umd)
-summary(model_gross)
+cor(umd$Year, umd$gross_emissions)
+
+cor(umd$Year, umd$offset_ratio)
 ```
 
+The correlation analysis shows a strong negative relationship between year and gross emissions, with a correlation coefficient of approximately -0.88. This indicates that overall greenhouse gas emissions generally declined over time between 2005 and 2025.
+The relationship between year and offset dependence was far weaker, with a correlation coefficient of approximately 0.18. This suggests that while offset use increased somewhat in later years, the relationship is not as strong or consistent across the full dataset. One reason for this weaker correlation is that estimated offsets only begin appearing after 2020, meaning much of the earlier data contains zero offset values.
+
 ```{r}
-model_offset <- (offset_ratio ~ Year, data = umd)
+# Descriptive Statistics
+
+summary(umd)
+
+umd %>%
+  summarize(
+    mean_gross = mean(gross_emissions),
+    median_gross = median(gross_emissions),
+    sd_gross = sd(gross_emissions),
+    min_gross = min(gross_emissions),
+    max_gross = max(gross_emissions)
+  )
+```
+The descriptive statistics show that average gross emissions remained well above 200,000 metric tons during the study period, although emissions steadily declined over time. The wide range between the minimum and maximum values reflects the substantial structural changes after 2020.
+
+```{r}
+model_gross <- lm(gross_emissions ~ Year, data = umd)
+summary(model_gross)
+```
+The regression results show a significant downward trend in gross emissions over time. This suggests that UMD’s total reported greenhouse gas emissions have generally decreased since 2005. However, the decline becomes especially steep after 2020, coinciding with the university’s transition in Scope 2 electricity reporting. 
+
+```{r}
+model_offset <- lm(offset_ratio ~ Year, data = umd)
 summary(model_offset)
 ```
+The offset ratio model helps evaluate whether reliance on offsets increased over time. The results suggest that accounting adjustments became much more important after 2020, supporting the hypothesis that carbon neutrality increasingly depends on purchased renewable energy mechanisms rather than only direct emissions reductions.
+
 
 After doing more research I need to adjust the last two codes. The other graphs we've covered similarly in class, but the gross summary and offset values I need to understand better. 
 
 Overall, I need to also better understand the amount of purchases UMD must make to offset this balance and maintain neutrality. For such a large campus, I know that they do rely heavily on offsets.
+
+
+
+Final Pitch:
+
+Is UMD Really Carbon Neutral? A Look Behind the University’s Emissions Claims
+
+This analysis found that UMD’s reported emissions declined substantially between 2005 and 2025, particularly after 2020. However, much of this reduction appears connected to changes in Scope 2 electricity accounting and estimated offsets rather than direct elimination of all campus emissions sources. As universities across the country announce climate neutrality goals, students and the public may not fully understand the distinction between reducing emissions and offsetting them through renewable energy credits or accounting mechanisms. This story would examine whether carbon neutrality claims accurately reflect real environmental reductions, and especially be important to the reflection and reputation of our own university. One limitation is that the university does not publish a complete downloadable emissions dataset, requiring partial reconstruction from public reports. Scope 3 emissions are also difficult to measure consistently across years considering the struggle to accurately measure non-university related emissions including commuter traffic emissions, supply chains, and indirect waste. To continue reporting this story, I would interview University of Maryland sustainability officials, environmental policy experts, and students involved in climate advocacy organizations. I would also examine purchasing records for renewable energy credits and compare UMD’s strategy with peer universities pursuing carbon neutrality goals.
